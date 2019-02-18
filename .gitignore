@@ -1,0 +1,3 @@
+# ignore files built by nesasm:
+*.fns
+*.nes
