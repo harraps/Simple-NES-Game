@@ -40,7 +40,7 @@ clear_memory:
     sta $0600, x
     sta $0700, x
     lda #$fe
-    sta SPR_ADDR_Y, x ; move all sprites off screen
+    sta SPR_ADDR, x ; move all sprites off screen
     inx
     bne clear_memory
 
@@ -70,7 +70,7 @@ pal_loop:
     ldx #0
 spr_loop:
     lda spr_data, x
-    sta SPR_ADDR_Y, x
+    sta SPR_ADDR, x
     inx
     cpx #32
     bne spr_loop

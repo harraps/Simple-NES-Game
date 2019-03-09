@@ -20,9 +20,11 @@ OAM_DATA = $2004
 OAM_DMA  = $4014
 
 ; controllers addresses
-JOYPAD = $4016
+JOYPAD_1 = $4016
+JOYPAD_2 = $4017
 
 ; sprite addresses
+SPR_ADDR   = $0200
 SPR_ADDR_Y = $0200 ; y position
 SPR_ADDR_S = $0201 ; sprite to use
 SPR_ADDR_A = $0202 ; attributes
@@ -56,13 +58,13 @@ set_ppu_addr .macro
 ; GAME CONSTANTS
 ; ==============
 
-GRAVITY    =  4
-JUMP_FORCE = -16
-
 WALL_TOP    = $20
 WALL_BOTTOM = $e0
 WALL_LEFT   = $04
 WALL_RIGHT  = $f4
+
+CENTER_X = $80
+CENTER_Y = $80
 
 ; TODO: remove
 ; draw sprite at location

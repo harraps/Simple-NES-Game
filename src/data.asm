@@ -26,10 +26,15 @@ pal_data:
 ; ===========
 ; define sprites animations
 spr_data:
-    .byte $80,$32,$00,$80 ; sprite 0
-    .byte $80,$33,$00,$80 ; sprite 1
-    .byte $88,$34,$00,$80 ; sprite 2
-    .byte $88,$35,$00,$80 ; sprite 3
+    .byte CENTER_Y,$32,%00000001,CENTER_X ; sprite 0
+    .byte CENTER_Y,$33,%00000001,CENTER_X ; sprite 1
+    .byte CENTER_Y,$42,%00000001,CENTER_X ; sprite 2
+    .byte CENTER_Y,$43,%00000001,CENTER_X ; sprite 3
+
+    .byte CENTER_Y,$32,%00000010,CENTER_X ; sprite 4
+    .byte CENTER_Y,$33,%00000010,CENTER_X ; sprite 5
+    .byte CENTER_Y,$42,%00000010,CENTER_X ; sprite 6
+    .byte CENTER_Y,$43,%00000010,CENTER_X ; sprite 7
 
 ; other data can be defined here
 
