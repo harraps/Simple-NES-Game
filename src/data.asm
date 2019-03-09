@@ -20,7 +20,16 @@ pal_data:
     .byte $0f,$08,$2a,$38 ; 1: jungle
     .byte $0f,$07,$2d,$3d ; 2: rust
     .byte $0f,$11,$23,$34 ; 3: aesthetic
-    
+
+; ===========
+; SPRITE DATA
+; ===========
+; define sprites animations
+spr_data:
+    .byte $80,$32,$00,$80 ; sprite 0
+    .byte $80,$33,$00,$80 ; sprite 1
+    .byte $88,$34,$00,$80 ; sprite 2
+    .byte $88,$35,$00,$80 ; sprite 3
 
 ; other data can be defined here
 

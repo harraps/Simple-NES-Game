@@ -10,10 +10,43 @@
     ; start main programs
     .org $8000
 
-; start of program code
-RESET:
-    sei ; disable IRQs
-    cld ; disable decimal mode
+; ==============
+; INITIALIZATION
+; ==============
+RESET:           ; start of program
+    sei          ; disable IRQs
+    cld          ; disable decimal mode
+    ldx #$40     ; 
+    stx APU_IRQ  ; disable APU frame IRQ
+    ldx #$ff     ; 
+    txs          ; set up stack
+    inx          ; > x == 0
+    stx PPU_CTRL ; disable NMI
+    stx PPU_MASK ; disable rendering
+    stx DMC_IRQ  ; disable DMC IRQs
+
+vblank_wait1: ; first wait for vblank
+    bit PPU_STAT
+    bpl vblank_wait1
+
+clear_memory:
+    lda #0
+    sta $0000, x
+    sta $0100, x
+    sta $0200, x
+    sta $0300, x
+    sta $0400, x
+    sta $0500, x
+    sta $0600, x
+    sta $0700, x
+    lda #$fe
+    sta SPR_ADDR_Y, x ; move all sprites off screen
+    inx
+    bne clear_memory
+
+vblank_wait2: ; second wait for vblank, PPU is ready
+    bit PPU_STAT
+    bpl vblank_wait2
 
 
 ; =============
@@ -22,7 +55,7 @@ RESET:
     set_ppu_addr $3f10
 
 ; Load the palette data
-    ldx #$00
+    ldx #0
 pal_loop:
     lda pal_data, x ; load data from src/data.asm
     sta PPU_DATA    ; write to PPU
@@ -31,17 +64,21 @@ pal_loop:
     bne pal_loop    ; while x != 16 -> loop
 
 
-; ===============
-; DRAW BACKGROUND
-; ===============
-    jsr draw_bg ; jump to src/draw_bg.asm
-    
+; ============
+; LOAD SPRITES
+; ============
+    ldx #0
+spr_loop:
+    lda spr_data, x
+    sta SPR_ADDR_Y, x
+    inx
+    cpx #32
+    bne spr_loop
 
-    ; TEST: draw a sprite
-    draw_sprite 0, 50, 50, $64, %00000000
-    draw_sprite 1, 58, 58, $64, %00000001
-    draw_sprite 2, 66, 66, $64, %00000010
-    draw_sprite 3, 74, 74, $64, %00000011
+; ===============
+; LOAD BACKGROUND
+; ===============
+    .include "src/draw_bg.asm"
 
 ; =======
 ; SET PPU
@@ -76,14 +113,6 @@ pal_loop:
 forever:
     jmp forever
 
-;;; we can define blocks of instructions here
-;;; we just need to define a label to start the block
-;;; and an other to go back into the main block
-
-
-    .include "src/draw_bg.asm"
-
-
 ; =================
 ; LOAD PICTURE DATA
 ; =================
@@ -94,7 +123,8 @@ NMI:
     lda #$02     ; 
     sta OAM_DMA  ; set high byte of RAM address (start transfer)
 
-    ;; real-time code is here
+    ; game loop is defined here
+    .include "src/joypad.asm"
     .include "src/update.asm"
 
     rti ; return from interrupt
